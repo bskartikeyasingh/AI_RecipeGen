@@ -27,8 +27,13 @@ app = Flask(__name__)
 
 CORS(
     app,
-    supports_credentials=True,
-    origins="*"
+    resources={
+        r"/*": {
+            "origins": [
+                "https://ai-recipegen.onrender.com"
+            ]
+        }
+    }
 )
 
 @app.after_request
@@ -73,7 +78,9 @@ GROQ_API_KEY = os.getenv(
 CLIPDROP_API_KEY = os.getenv(
     "CLIPDROP_API_KEY"
 )
-
+BASE_URL = os.getenv(
+    "BASE_URL"
+)
 # ====================================
 # GROQ
 # ====================================
@@ -151,10 +158,8 @@ def generate_ai_image(
             f.write(response.content)
 
         return (
-            f"https://ai-recipegenback.onrender.com/"
-            f"media/images/{image_filename}"
-        )
-
+    f"{BASE_URL}/media/images/{image_filename}"
+)
     except Exception as e:
 
         print(
