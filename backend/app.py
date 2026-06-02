@@ -23,15 +23,11 @@ load_dotenv()
 # APP
 # ====================================
 
+
 app = Flask(__name__)
 
-CORS(
-    app,
-    origins=[
-        "https://ai-recipegen.onrender.com"
-    ],
-    supports_credentials=True
-)
+CORS(app)
+    
 
 @app.after_request
 def after_request(response):
