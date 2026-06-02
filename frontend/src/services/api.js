@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://ai-recipe-backend-aect.onrender.com",
+  baseURL: "https://ai-recipegenback.onrender.com",
 });
 
 export default API;

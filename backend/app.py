@@ -132,7 +132,7 @@ def generate_ai_image(
             f.write(response.content)
 
         return (
-            f"http://127.0.0.1:5000/"
+            f"https://ai-recipegenback.onrender.com"
             f"media/images/{image_filename}"
         )
 
