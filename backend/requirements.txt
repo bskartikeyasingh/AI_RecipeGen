@@ -1,7 +1,9 @@
-fastapi
-uvicorn
+flask
+flask-cors
+gunicorn
 python-dotenv
-python-multipart
-jinja2
+requests
+pymongo
+dnspython
 langchain
 langchain-groq
