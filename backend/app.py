@@ -27,13 +27,10 @@ app = Flask(__name__)
 
 CORS(
     app,
-    resources={
-        r"/*": {
-            "origins": [
-                "https://ai-recipegen.onrender.com"
-            ]
-        }
-    }
+    origins=[
+        "https://ai-recipegen.onrender.com"
+    ],
+    supports_credentials=True
 )
 
 @app.after_request
