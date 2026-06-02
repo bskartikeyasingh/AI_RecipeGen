@@ -27,12 +27,25 @@ app = Flask(__name__)
 
 CORS(
     app,
-    resources={
-        r"/*": {
-            "origins": "*"
-        }
-    }
+    supports_credentials=True,
+    origins="*"
 )
+
+@app.after_request
+def after_request(response):
+
+    response.headers["Access-Control-Allow-Origin"] = "*"
+
+    response.headers["Access-Control-Allow-Headers"] = (
+        "Content-Type,Authorization"
+    )
+
+    response.headers["Access-Control-Allow-Methods"] = (
+        "GET,POST,PUT,DELETE,OPTIONS"
+    )
+
+    return response
+
 # ====================================
 # FOLDERS
 # ====================================
@@ -138,7 +151,7 @@ def generate_ai_image(
             f.write(response.content)
 
         return (
-            f"https://ai-recipegenback.onrender.com"
+            f"https://ai-recipegenback.onrender.com/"
             f"media/images/{image_filename}"
         )
 
@@ -169,10 +182,13 @@ def home():
 
 @app.route(
     "/generate-recipe",
-    methods=["POST"]
+    methods=["POST", "OPTIONS"]
 )
 
 def generate_recipe():
+
+    if request.method == "OPTIONS":
+        return jsonify({"message": "OK"}), 200
 
     try:
 
@@ -201,10 +217,6 @@ def generate_recipe():
         ingredients_text = ", ".join(
             ingredients
         )
-
-        # ====================================
-        # GROQ PROMPT
-        # ====================================
 
         prompt = f"""
         Generate a professional recipe.
@@ -269,10 +281,6 @@ def generate_recipe():
             .content
         )
 
-        # ====================================
-        # CLEAN JSON
-        # ====================================
-
         recipe_content = (
             recipe_content
             .replace("```json", "")
@@ -280,17 +288,9 @@ def generate_recipe():
             .strip()
         )
 
-        # ====================================
-        # PARSE JSON
-        # ====================================
-
         recipe_data = json.loads(
             recipe_content
         )
-
-        # ====================================
-        # GENERATE IMAGES
-        # ====================================
 
         for step in recipe_data["steps"]:
 
@@ -302,10 +302,6 @@ def generate_recipe():
             )
 
             step["image"] = image_url
-
-        # ====================================
-        # SAVE TO DATABASE
-        # ====================================
 
         recipe_document = {
 
@@ -384,6 +380,7 @@ def get_history(email):
         return jsonify({
             "error": str(e)
         }), 500
+
 # ====================================
 # SAVE FAVORITE
 # ====================================
@@ -448,6 +445,7 @@ def get_favorites(email):
         return jsonify({
             "error": str(e)
         }), 500
+
 # ====================================
 # MAIN
 # ====================================
